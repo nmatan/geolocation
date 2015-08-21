@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-// Init chennels dummy dataset
+// Init channels dummy dataset
 var _channelsByCountryDictionary = new Object();
 _channelsByCountryDictionary['FR'] = ['arutz la dvivon', 'marmelade tv']; // France
 _channelsByCountryDictionary['IL'] = ['arutz yahadut', 'knesset TV']; // israel
@@ -10,7 +10,7 @@ _channelsByCountryDictionary['NL'] = ['bergkamp TV'];
 // Create a geocoder that will be used for coordinates
 var extra = {
     formatter: 'string',         // set response format
-    formatterPattern: '%p'       // We want the country 2 char's code..
+    formatterPattern: '%p'       // We want the country 2 char's code.
 };
 var geocoder = require('node-geocoder')('google', 'http', extra);
 
@@ -71,7 +71,6 @@ function getChannelsByIP(request, response)
             sendErrorResponse(response, 'UNKNOWN_ERROR')
         }
     });
-
 }
 
 // This method extracts the list of channels from the dataset and sends 'em to the client
@@ -92,12 +91,12 @@ function sendResponse(response, countryCode)
 
 function sendErrorResponse(res,err)
 {
-    res.send({status: 'ERROR', data: err });
+    res.send({status: 'error', message: err });
 }
 
 function sendSuccessResponse(res, data)
 {
-    res.send({status: 'SUCESS', data: data });
+    res.send({status: 'success', data: data });
 }
 
 
