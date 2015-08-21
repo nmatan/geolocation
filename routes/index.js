@@ -20,30 +20,24 @@ var satelize = require('satelize');
 /* get channels by coordinates service . */
 router.get('/channels', function(request, response, next) {
 
-    try {
-        if (request.query.lat && request.query.lon) {
-            // Try getting the user's country by coordinates
-            geocoder.reverse({lat: request.query.lat, lon: request.query.lon}, function (err, geoData) {
+    if (request.query.lat && request.query.lon) {
 
-                if (!err && geoData) {
+        // Try getting the user's country by coordinates
+        geocoder.reverse({lat: request.query.lat, lon: request.query.lon}, function (err, geoData) {
 
-                    sendResponse(response, geoData[0]);
-                }
-                else // No luck using coordinates - try using geocoding by IP as fallback
-                {
-                    getByChannelsByIP(request, response);
-                }
-            });
-        }
-        else {
-            // No coordinates supplied - fallback to geocoding by IP instead
-            getChannelsByIP(request, response);
-        }
+            if (!err && geoData) {
+
+                sendResponse(response, geoData[0]);
+            }
+            else // No luck using coordinates - try using geocoding by IP as fallback
+            {
+                getByChannelsByIP(request, response);
+            }
+        });
     }
-    catch (e) // Handling error in synchronius code - callback errors are handled along the flow..
-    {
-        console(e);
-        sendErrorResponse(response, 'UNKNOWN_ERROR')
+    else {
+        // No coordinates supplied - fallback to geocoding by IP instead
+        getChannelsByIP(request, response);
     }
 });
 
@@ -63,11 +57,18 @@ function getChannelsByIP(request, response)
     // Using the satlize module to get the client's location by ip (it supports both ipv6 and ipv4)
     satelize.satelize({ip: clientIP}, function (err, geoData) {
 
-        if (!err && geoData) {
-            sendResponse(response, JSON.parse(geoData).country_code)
+        try {
+            if (!err && geoData) {
+                sendResponse(response, JSON.parse(geoData).country_code)
+            }
+            else {
+                sendErrorResponse(response, "ERROR_LOCATING_CLIENT");
+            }
         }
-        else {
-            sendErrorResponse(response, "ERROR_LOCATING_CLIENT");
+        catch (e) // Handling error in synchronius code - incase json.parse throws an error.
+        {
+            console(e);
+            sendErrorResponse(response, 'UNKNOWN_ERROR')
         }
     });
 
@@ -86,7 +87,6 @@ function sendResponse(response, countryCode)
     }
     else {
         sendErrorResponse(response, 'COUNTRY_NOT_LISTED');
-
     }
 }
 
