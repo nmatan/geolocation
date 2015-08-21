@@ -76,7 +76,6 @@ function getChannelsByIP(request, response)
 // This method extracts the list of channels from the dataset and sends 'em to the client
 function sendResponse(response, countryCode)
 {
-
     // Get the channels list by country code
     var channelsList = _channelsByCountryDictionary[countryCode];
 
