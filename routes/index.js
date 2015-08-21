@@ -27,7 +27,7 @@ router.get('/channels', function(request, response, next) {
 
             if (!err && geoData) {
 
-                sendResponse(response, geoData[0]);
+                getChannelsByCountry(response, geoData[0]);
             }
             else // No luck using coordinates - try using geocoding by IP as fallback
             {
@@ -59,7 +59,7 @@ function getChannelsByIP(request, response)
 
         try {
             if (!err && geoData) {
-                sendResponse(response, JSON.parse(geoData).country_code)
+                getChannelsByCountry(response, JSON.parse(geoData).country_code)
             }
             else {
                 sendErrorResponse(response, "ERROR_LOCATING_CLIENT");
@@ -74,7 +74,7 @@ function getChannelsByIP(request, response)
 }
 
 // This method extracts the list of channels from the dataset and sends 'em to the client
-function sendResponse(response, countryCode)
+function getChannelsByCountry(response, countryCode)
 {
     // Get the channels list by country code
     var channelsList = _channelsByCountryDictionary[countryCode];
