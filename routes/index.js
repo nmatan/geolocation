@@ -67,7 +67,6 @@ function getChannelsByIP(request, response)
         }
         catch (e) // Handling error in synchronius code - incase json.parse throws an error.
         {
-            console(e);
             sendErrorResponse(response, 'UNKNOWN_ERROR')
         }
     });
